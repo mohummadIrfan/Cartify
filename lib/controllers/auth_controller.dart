@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:ecommerce_api_app/model/userModel.dart';
 import 'package:ecommerce_api_app/utlis/constant.dart';
 import 'package:ecommerce_api_app/utlis/manage_http_request.dart';
+import 'package:ecommerce_api_app/view/auth/home_screen.dart';
 import 'package:ecommerce_api_app/view/auth/login/back_to_login_screen.dart';
 import 'package:ecommerce_api_app/view/auth/login/otp_verified_screen.dart';
 import 'package:flutter/material.dart';
@@ -66,6 +67,7 @@ class AuthController extends GetxController {
         context: context,
         onSuccess: () {
           showSnackBar('Login', 'Login Account Successfully');
+          Get.to(BannerScreen());
         },
       );
     } catch (e) {
