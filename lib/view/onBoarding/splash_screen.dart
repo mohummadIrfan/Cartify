@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:ecommerce_api_app/controllers/auth_controller.dart';
 import 'package:ecommerce_api_app/utlis/colors.dart';
 import 'package:ecommerce_api_app/utlis/images.dart';
-import 'package:ecommerce_api_app/view/onBoarding/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -16,11 +16,12 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final AuthController authController = Get.put(AuthController());
   @override
   void initState() {
     super.initState();
     Timer(Duration(seconds: 4), () {
-      Get.off(() => OnboardingScreen());
+      authController.checkLoginStatus();
     });
   }
 

@@ -1,6 +1,7 @@
 class UserModel {
   String? fullName;
   String? email;
+  String? token;
   String? city;
   String? state;
   String? locality;
@@ -15,6 +16,7 @@ class UserModel {
     this.email,
     this.city,
     this.state,
+    this.token,
     this.locality,
     this.password,
     this.confirmNewPassword,
@@ -35,6 +37,7 @@ class UserModel {
       password: json['password'],
       id: json['_id'],
       v: json['__v'],
+      token: json['token'],
     );
   }
 
@@ -48,6 +51,7 @@ class UserModel {
       'confirmPassword': confirmNewPassword,
       'locality': locality,
       'password': password,
+      'token': token,
     };
   }
 }

@@ -3,12 +3,16 @@ import 'dart:convert';
 import 'package:ecommerce_api_app/model/userModel.dart';
 import 'package:ecommerce_api_app/utlis/constant.dart';
 import 'package:ecommerce_api_app/utlis/manage_http_request.dart';
+//import 'package:ecommerce_api_app/utlis/manage_http_request.dart' as SharePreferences show showSnackBar;
 import 'package:ecommerce_api_app/view/auth/home_screen.dart';
 import 'package:ecommerce_api_app/view/auth/login/back_to_login_screen.dart';
+import 'package:ecommerce_api_app/view/auth/login/login_screen.dart';
 import 'package:ecommerce_api_app/view/auth/login/otp_verified_screen.dart';
+import 'package:ecommerce_api_app/view/onBoarding/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController extends GetxController {
   var isLoading = false.obs;
@@ -65,7 +69,18 @@ class AuthController extends GetxController {
       manageHttpRequest(
         response: response,
         context: context,
-        onSuccess: () {
+        onSuccess: () async {
+          final data = jsonDecode(response.body);
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('isLoggedIn', true);
+          await prefs.setString('token', data['token']);
+          await prefs.setString('fullName', data['fullName']);
+          await prefs.setString('email', data['email']);
+          await prefs.setString('city', data['city'] ?? '');
+          await prefs.setString('state', data['state'] ?? '');
+          await prefs.setString('locality', data['locality'] ?? '');
+          await prefs.setString('id', data['_id']);
+
           showSnackBar('Login', 'Login Account Successfully');
           Get.to(BannerScreen());
         },
@@ -75,6 +90,23 @@ class AuthController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  Future<void> checkLoginStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if (token != null && token.isNotEmpty) {
+      Get.offAll(() => const BannerScreen());
+    } else {
+      Get.offAll(() => const OnboardingScreen());
+    }
+  }
+
+  Future<void> logoutUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    Get.offAll(() => const LoginScreen());
   }
 
   Future<void> forgetPassword({required String email, required context}) async {
@@ -160,6 +192,8 @@ class AuthController extends GetxController {
           showSnackBar("Login", "Login Sucessfully");
         },
       );
-    } catch (e) {}
+    } catch (e) {
+         showSnackBar("error", "error during login $e");
+    }
   }
 }
